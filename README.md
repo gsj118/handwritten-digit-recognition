@@ -1,6 +1,6 @@
 # Handwritten Digit Recognition
 
-브라우저에 직접 그린 **0~9 한 자리 손글씨 숫자**를 MNIST로 학습한 CNN이 인식하는 웹 애플리케이션입니다. 예측 숫자, confidence, 상위 3개 후보와 전체 클래스 확률을 함께 표시합니다. 컴퓨터공학과 「인공지능활용실습」 과제를 위한 프로젝트로, 학습부터 전처리·추론·웹 화면까지의 흐름을 확인할 수 있습니다.
+브라우저에 직접 그린 **0~9 한 자리 손글씨 숫자**를 MNIST로 학습한 CNN이 인식하는 웹 애플리케이션입니다. 예측 숫자, 예측 확률(Confidence), 상위 3개 후보와 전체 클래스 확률을 함께 표시합니다. 컴퓨터공학과 「인공지능활용실습」 과제를 위한 프로젝트로, 학습부터 전처리·추론·웹 화면까지의 흐름을 확인할 수 있습니다.
 
 ## Demo / 주요 화면
 
@@ -10,11 +10,20 @@
 
 직접 실행한 v1.2 앱의 스크린샷입니다. 화면의 ‘예측 확률’(confidence)은 소수점 한 자리로 반올림한 값입니다. [v1.0 화면](docs/demo.png)과 [v1.1 화면](docs/hci_after.png)은 비교 기준으로 보존했습니다.
 
+## Project Summary
+
+| 항목 | 현재 상태 |
+|---|---|
+| 버전 / 모델 | v1.2 · MNIST CNN |
+| 측정 정확도 | 공식 MNIST 테스트 **98.87%**, 검증 **98.98%** |
+| 자동 검증 | Python pytest **32 passed** · Node.js UI 상태 테스트 **8 passed** |
+| 개발 과정 | v1.1 HCI / UX 개선 → v1.2 synthetic beta evaluation 및 최종 보완 |
+
 ## Features
 
 - 마우스·펜·터치로 입력하는 Canvas와 초기화 기능
 - 숫자 영역 추출, 비율 유지 축소, 무게중심 정렬을 적용한 전처리
-- 예측 숫자·confidence·Top 3·0~9 확률 막대 표시
+- 예측 숫자·예측 확률(Confidence)·Top 3·0~9 확률 막대 표시
 - 실제 전처리 이미지 미리보기와 모델 준비 상태 표시
 - 빈 그림, 잘못된 요청, 누락되거나 손상된 모델 파일 처리
 - CPU 학습·추론, checkpoint 저장·로드, pytest 테스트
@@ -29,8 +38,8 @@
 | System status / Feedback | 버튼·결과 badge·상태 문구 동기화, 초기화·요청 취소 사실 표시 |
 | Error recovery | 연결·입력·응답 오류에 원인과 다음 행동을 한국어로 안내 |
 | Consistency | ‘숫자 인식’·‘지우기’ 등 행동과 상태 표현 통일 |
-| Information hierarchy | 예측 숫자·Confidence·Top 3 유지, 전체 확률은 선택적으로 펼치기 |
-| Accessibility | Canvas 설명 연결, 숫자·Confidence를 포함한 상태 안내, 키보드 focus 표시 |
+| Information hierarchy | 예측 숫자·예측 확률(Confidence)·Top 3 유지, 전체 확률은 선택적으로 펼치기 |
+| Accessibility | Canvas 설명 연결, 숫자·예측 확률을 포함한 상태 안내, 키보드 focus 표시 |
 | Readability | 주요 안내·수치의 글자 크기와 대비 개선 |
 
 흰색 배경·보라색 accent, Digit Lab branding, 왼쪽 입력/오른쪽 결과와 하단 모델 입력 흐름은 유지했습니다. 실제 사용자 대상 usability test를 수행한 것은 아니며, 사용자 만족도 향상을 측정했다고 주장하지 않습니다. 분석 근거, 개선 전후 화면, 검증 범위는 [HCI / UX Refinement 설계 기록](docs/HCI_UX_REFINEMENT.md)에 정리했습니다.
@@ -39,9 +48,9 @@
 
 | 버전 | 개발 내용 | Git 이력 |
 |---|---|---|
-| v1.0 — AI Functionality | MNIST CNN, Canvas·전처리·추론 API, 확률 시각화, Python 테스트 32개 | [`1aa91ca`](https://github.com/gsj118/handwritten-digit-recognition/commit/1aa91ca) · `Implement MNIST handwritten digit recognition app` |
-| v1.1 — HCI / UX Refinement | 상태 피드백·오류 예방/복구·상세 정보·접근성 보완, UI 상태 테스트와 HCI 설계 기록 | 별도 후속 commit · `Improve interaction and UI using HCI principles` |
-| v1.2 — Synthetic Beta Evaluation & Final Refinement | 10개 synthetic persona의 시나리오 검토·피드백 통합, 확률 설명과 입력 안내 보완, 회귀 검증 | 별도 후속 commit · `Finalize app after synthetic beta evaluation` |
+| v1.0 — AI Functionality | MNIST CNN, Canvas·전처리·추론 API, 확률 시각화, Python 테스트 32개 | [`1aa91ca`](https://github.com/gsj118/handwritten-digit-recognition/commit/1aa91ca71273f84b38c794133b3b8e88ac6cf062) · `Implement MNIST handwritten digit recognition app` |
+| v1.1 — HCI / UX Refinement | 상태 피드백·오류 예방/복구·상세 정보·접근성 보완, UI 상태 테스트와 HCI 설계 기록 | [`0c01183`](https://github.com/gsj118/handwritten-digit-recognition/commit/0c01183c2804ce5e304357efb1a1b9986c36a198) · `Improve interaction and UI using HCI principles` |
+| v1.2 — Synthetic Beta Evaluation & Final Refinement | 10개 synthetic persona의 시나리오 검토·피드백 통합, 확률 설명과 입력 안내 보완, 회귀 검증 | [`33be6cd`](https://github.com/gsj118/handwritten-digit-recognition/commit/33be6cda94228908efc4c7c0ee246584c058c1ed) · `Finalize app after synthetic beta evaluation` |
 
 버전명은 개발 단계 구분이며 별도 Git tag나 GitHub Release를 생성했다는 의미는 아닙니다. v1.0 commit과 모델·성능 기록은 보존합니다.
 
@@ -266,7 +275,7 @@ pytest
 
 기존 Python 테스트의 실제 검증 결과는 **32 passed**입니다. v1.0에서 수행한 `python -m pip check`와 Python 컴파일 검사도 통과했습니다.
 
-v1.1 UI 상태 테스트는 Node.js 22 이상에서 별도로 실행합니다. npm 패키지는 필요하지 않으며 Node.js는 앱 실행 의존성이 아닙니다.
+v1.1 UI 상태 테스트는 Node.js 24.19.0 환경에서 검증했습니다. npm 패키지는 필요하지 않으며 Node.js는 앱 실행 의존성이 아닙니다.
 
 ```powershell
 node --check static/js/app.js

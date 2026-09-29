@@ -1,10 +1,12 @@
 # HCI / UX Refinement
 
+> 이 문서는 v1.1 HCI / UX 개선 시점의 설계 기록입니다. 이후 v1.2의 synthetic persona 기반 평가와 최종 보완은 [Synthetic Beta Evaluation](SYNTHETIC_BETA_EVALUATION.md)에 기록했습니다.
+
 ## 1. 목적
 
 기능적으로 완성된 Handwritten Digit Recognition을 **HCI 원칙을 기반으로 한 설계 분석 및 개선** 대상으로 검토했다. 목표는 숫자를 그리는 단계부터 결과 이해와 재시도까지 현재 상태와 다음 행동을 명확하게 전달하는 것이다.
 
-기준 버전은 [`1aa91ca` — Implement MNIST handwritten digit recognition app](https://github.com/gsj118/handwritten-digit-recognition/commit/1aa91ca)이다. 이번 v1.1은 그 다음의 별도 commit이다. CNN, 학습된 checkpoint, 전처리, Flask API는 변경하거나 재학습하지 않았다. 기존 98.87% 테스트 정확도는 v1.0의 실측값을 그대로 보존한다.
+기준 버전은 [`1aa91ca` — Implement MNIST handwritten digit recognition app](https://github.com/gsj118/handwritten-digit-recognition/commit/1aa91ca71273f84b38c794133b3b8e88ac6cf062)이다. v1.1 변경은 [`0c01183` — Improve interaction and UI using HCI principles](https://github.com/gsj118/handwritten-digit-recognition/commit/0c01183c2804ce5e304357efb1a1b9986c36a198)에 기록했다. CNN, 학습된 checkpoint, 전처리, Flask API는 변경하거나 재학습하지 않았다. 기존 98.87% 테스트 정확도는 v1.0의 실측값을 그대로 보존한다.
 
 「휴먼컴퓨터인터페이스」 과목의 학습 범위인 인터랙션 디자인, UI 디자인 방법론, UI 설계를 위한 프로젝트 방법론과 연결해 설계 이유를 기록한다. 특정 교재의 문장이나 강의에서 다루었는지 확인되지 않은 이론을 인용하지 않는다.
 

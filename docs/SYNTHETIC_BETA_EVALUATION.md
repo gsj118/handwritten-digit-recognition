@@ -8,7 +8,9 @@
 
 ## 2. Scope
 
-- 기준: [`0c01183`](https://github.com/gsj118/handwritten-digit-recognition/commit/0c01183), 최초 구현 [`1aa91ca`](https://github.com/gsj118/handwritten-digit-recognition/commit/1aa91ca) 보존.
+- v1.0 최초 구현: [`1aa91ca` — Implement MNIST handwritten digit recognition app](https://github.com/gsj118/handwritten-digit-recognition/commit/1aa91ca71273f84b38c794133b3b8e88ac6cf062).
+- v1.1 평가 기준: [`0c01183` — Improve interaction and UI using HCI principles](https://github.com/gsj118/handwritten-digit-recognition/commit/0c01183c2804ce5e304357efb1a1b9986c36a198).
+- v1.2 최종 보완: [`33be6cd` — Finalize app after synthetic beta evaluation](https://github.com/gsj118/handwritten-digit-recognition/commit/33be6cda94228908efc4c7c0ee246584c058c1ed).
 - Canvas → 인식 → 결과 → 상세 확률 → 지우기 → 재시도, 좁은 화면, 키보드, 연결 오류, 늦은 응답을 검토했다.
 - CNN, checkpoint, 전처리, Flask API, v1.1 상태 제어와 시각적 정체성은 유지했다.
 - 기존 MNIST test accuracy **98.87%**, validation accuracy **98.98%**는 이전 측정값이다. 재학습하거나 새 정확도를 측정하지 않았다.
