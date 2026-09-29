@@ -6,9 +6,9 @@
 
 프로그램을 실행한 뒤 [http://127.0.0.1:5000](http://127.0.0.1:5000)에 접속합니다. 왼쪽에서 숫자를 그리고, 오른쪽에서 예측 결과와 확률 분포를 확인합니다. 아래에는 실제 모델에 전달한 28×28 이미지가 표시됩니다.
 
-![실제 브라우저에서 숫자 7을 그려 인식한 화면](docs/demo.png)
+![v1.1 브라우저에서 숫자 7을 그려 인식한 화면](docs/hci_after.png)
 
-직접 실행한 앱의 스크린샷입니다. 표시되는 confidence는 소수점 한 자리로 반올림한 값입니다.
+직접 실행한 v1.1 앱의 스크린샷입니다. 표시되는 confidence는 소수점 한 자리로 반올림한 값입니다. [v1.0 화면](docs/demo.png)은 비교 기준으로 보존했습니다.
 
 ## Features
 
@@ -18,6 +18,31 @@
 - 실제 전처리 이미지 미리보기와 모델 준비 상태 표시
 - 빈 그림, 잘못된 요청, 누락되거나 손상된 모델 파일 처리
 - CPU 학습·추론, checkpoint 저장·로드, pytest 테스트
+
+## HCI / UX Design
+
+기능적으로 완성된 AI 프로그램을 **HCI 원칙을 기반으로 한 설계 분석 및 개선** 대상으로 검토했습니다. 핵심 태스크는 **그리기 → 숫자 인식 → 결과 이해 → 지우기/재시도**이며, 각 단계에서 현재 상태와 다음 행동을 알 수 있도록 보완했습니다.
+
+| HCI 관점 | 실제 적용 내용 |
+|---|---|
+| Error prevention | 빈 입력·획 입력 중·분석 중·모델 미준비 시 인식 비활성화, 이유 안내 |
+| System status / Feedback | 버튼·결과 badge·상태 문구 동기화, 초기화·요청 취소 사실 표시 |
+| Error recovery | 연결·입력·응답 오류에 원인과 다음 행동을 한국어로 안내 |
+| Consistency | ‘숫자 인식’·‘지우기’ 등 행동과 상태 표현 통일 |
+| Information hierarchy | 예측 숫자·Confidence·Top 3 유지, 전체 확률은 선택적으로 펼치기 |
+| Accessibility | Canvas 설명 연결, 숫자·Confidence를 포함한 상태 안내, 키보드 focus 표시 |
+| Readability | 주요 안내·수치의 글자 크기와 대비 개선 |
+
+흰색 배경·보라색 accent, Digit Lab branding, 왼쪽 입력/오른쪽 결과와 하단 모델 입력 흐름은 유지했습니다. 실제 사용자 대상 usability test를 수행한 것은 아니며, 사용자 만족도 향상을 측정했다고 주장하지 않습니다. 분석 근거, 개선 전후 화면, 검증 범위는 [HCI / UX Refinement 설계 기록](docs/HCI_UX_REFINEMENT.md)에 정리했습니다.
+
+## Development History
+
+| 버전 | 개발 내용 | Git 이력 |
+|---|---|---|
+| v1.0 — AI Functionality | MNIST CNN, Canvas·전처리·추론 API, 확률 시각화, Python 테스트 32개 | [`1aa91ca`](https://github.com/gsj118/handwritten-digit-recognition/commit/1aa91ca) · `Implement MNIST handwritten digit recognition app` |
+| v1.1 — HCI / UX Refinement | 상태 피드백·오류 예방/복구·상세 정보·접근성 보완, UI 상태 테스트와 HCI 설계 기록 | 별도 후속 commit · `Improve interaction and UI using HCI principles` |
+
+버전명은 개발 단계 구분이며 별도 Git tag나 GitHub Release를 생성했다는 의미는 아닙니다. v1.0 commit과 모델·성능 기록은 보존합니다.
 
 ## How It Works
 
@@ -94,12 +119,15 @@ handwritten-digit-recognition/
 │   ├── js/app.js
 │   └── favicon.svg
 ├── docs/
-│   └── demo.png             # Screenshot of the running application
+│   ├── demo.png             # Preserved v1.0 screenshot
+│   ├── hci_after.png        # Actual v1.1 screenshot
+│   └── HCI_UX_REFINEMENT.md # HCI review and design decisions
 └── tests/
     ├── conftest.py
     ├── test_preprocessing.py
     ├── test_model.py
-    └── test_api.py
+    ├── test_api.py
+    └── ui_state.test.cjs    # UI state and request-race tests (Node.js)
 ```
 
 `data/`는 학습·평가 시 생성됩니다. 원본 MNIST, `.venv/`, 캐시 및 로그는 Git에서 제외하며, 실행에 필요한 작은 checkpoint는 포함합니다.
@@ -108,18 +136,20 @@ handwritten-digit-recognition/
 
 **Windows x64, Python 3.11 또는 3.12를 권장합니다.** 직접 의존성은 검증한 버전으로 고정했습니다. `requirements.txt`는 PyTorch의 CPU wheel을 사용하므로 CUDA나 GPU가 필요하지 않습니다. Python 3.14 등 다른 버전에는 이 고정 버전의 wheel이 없을 수 있습니다.
 
-GitHub 저장소를 clone하거나 ZIP으로 내려받은 뒤 프로젝트 폴더에서 실행합니다. 아직 공개 저장소 URL이 확정되지 않아 임의의 clone 주소는 기재하지 않았습니다.
+공개 [GitHub 저장소](https://github.com/gsj118/handwritten-digit-recognition)를 clone한 뒤 실행합니다. ZIP으로 내려받았다면 압축을 푼 프로젝트 폴더에서 가상환경 생성부터 진행합니다.
 
 Windows PowerShell:
 
 ```powershell
+git clone https://github.com/gsj118/handwritten-digit-recognition.git
+cd handwritten-digit-recognition
 py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 python app.py
 ```
 
-Python 3.11을 사용하는 경우 첫 줄을 `py -3.11 -m venv .venv`로 바꿉니다. `py` 명령이 없다면 설치한 Python 3.11/3.12의 `python -m venv .venv`를 사용합니다.
+Python 3.11을 사용하는 경우 가상환경 생성 명령을 `py -3.11 -m venv .venv`로 바꿉니다. `py` 명령이 없다면 설치한 Python 3.11/3.12의 `python -m venv .venv`를 사용합니다.
 
 PowerShell 실행 정책 때문에 활성화가 차단되면 정책을 변경할 필요 없이 다음과 같이 실행합니다.
 
@@ -164,14 +194,14 @@ python app.py
 
 콘솔에 표시된 **[http://127.0.0.1:5000](http://127.0.0.1:5000)** 을 브라우저로 엽니다. 서버 종료는 터미널에서 `Ctrl+C`를 누릅니다. 5000번 포트를 다른 프로그램이 사용 중이면 해당 프로그램을 종료한 뒤 다시 실행합니다.
 
-모델이 없거나 손상된 경우에도 화면은 열리지만 Recognize는 비활성화되며 `python train.py` 실행 안내가 표시됩니다. 학습을 마친 후 앱을 다시 시작하세요. 웹 앱이 자동으로 재학습하지 않습니다. 기본 서버는 로컬 실습용 Flask 개발 서버입니다.
+모델이 없거나 손상된 경우에도 화면은 열리지만 ‘숫자 인식’은 비활성화되며 `python train.py` 실행 안내가 표시됩니다. 학습을 마친 후 앱을 다시 시작하세요. 웹 앱이 자동으로 재학습하지 않습니다. 기본 서버는 로컬 실습용 Flask 개발 서버입니다.
 
 ## Usage
 
 1. Canvas에 0~9 중 **한 자리 숫자**를 그립니다.
-2. **Recognize**를 눌러 분석합니다.
-3. 예측 숫자, confidence, Top 3, 전체 확률과 28×28 입력을 확인합니다.
-4. **Clear**로 그림과 결과를 초기화한 뒤 다시 그립니다.
+2. 획을 마친 뒤 활성화된 **숫자 인식**을 눌러 분석합니다.
+3. 예측 숫자, Confidence, Top 3와 28×28 입력을 확인합니다. **전체 숫자 확률**을 펼치면 0~9 확률을 볼 수 있습니다.
+4. **지우기**로 그림과 결과를 초기화한 뒤 다시 그립니다. 분석 중에도 지우기로 취소할 수 있습니다.
 
 숫자가 Canvas 가장자리에서 잘리지 않도록 그려주세요. 인식이 어려우면 획을 명확하게 다시 작성해 보세요. 여러 자리 숫자나 글자를 분리하는 기능은 없습니다.
 
@@ -227,11 +257,20 @@ pytest
 
 테스트는 출력 shape·정규화 값·밝기 반전·위치 이동·종횡비·투명/빈 이미지 처리, CNN logits·checkpoint 로드, API 응답 확률·오류 코드·요청 크기 제한·모델 누락/손상을 확인합니다. API 단위 테스트는 임시 무작위 가중치를 사용해 계약을 검증하며, **인식 정확도를 입증하는 테스트는 아닙니다.** 동봉된 학습 checkpoint가 로드되는지도 별도로 검사합니다. pytest는 MNIST를 다운로드하거나 모델을 학습하지 않습니다.
 
-실제 검증 결과: **32 passed**. `python -m pip check`에서 의존성 충돌이 없었고, Python 컴파일 검사와 `node --check static/js/app.js`도 통과했습니다. Node.js는 JavaScript 구문 검증에만 사용했으며 앱 실행 의존성이 아닙니다.
+기존 Python 테스트의 실제 검증 결과는 **32 passed**입니다. v1.0에서 수행한 `python -m pip check`와 Python 컴파일 검사도 통과했습니다.
 
-실행 중인 Flask 앱에서도 마우스로 숫자 7 그리기 → Recognize → 결과 표시, Clear 초기화와 빈 Canvas 안내를 확인했습니다. 데스크톱(1440px), 좁은 화면(390px·320px)에서 레이아웃을 확인했으며 390px 결과 화면에 가로 넘침이 없었습니다. 저장된 가중치의 `python evaluate.py` 재평가 결과도 **98.87%**로 일치했습니다.
+v1.1 UI 상태 테스트는 Node.js 22 이상에서 별도로 실행합니다. npm 패키지는 필요하지 않으며 Node.js는 앱 실행 의존성이 아닙니다.
 
-배포 대상 21개 파일만 임시 폴더에 복사한 상태에서도 기존 가상환경을 사용하여 테스트 32개와 앱·모델 로드를 통과했습니다. 이 검사에는 원본 MNIST·캐시를 포함하지 않았으며, 별도 PC에 의존성을 새로 설치한 검사는 아닙니다.
+```powershell
+node --check static/js/app.js
+node --test tests/ui_state.test.cjs
+```
+
+실제 결과는 JavaScript 구문 검사 통과, **UI 상태 테스트 8개 통과**입니다. pytest 32개와 합계 40개이며, ‘pytest 40개’는 아닙니다. UI 테스트는 실제 `app.js`를 DOM 대역과 제어된 요청으로 실행해 중복 요청, 요청 취소 후 늦은 응답, timeout, 오류 복구와 모델 미준비 상태를 확인합니다.
+
+v1.1 실행 화면에서도 숫자 7 그리기·인식, 결과·미리보기, 지우기, 키보드 상세 확률 펼치기, 서버 연결 실패 후 재시도를 확인했습니다. 데스크톱(1440px)과 390px에서 핵심 흐름을 검증했고 390px·320px에서 가로 넘침이 없었습니다. 이는 개발 중 기능 검증이며 사용자 대상 사용성 테스트가 아닙니다.
+
+v1.0에서 저장된 가중치의 `python evaluate.py` 재평가 결과는 **98.87%**였습니다. 당시 배포 대상 21개 파일만 임시 폴더에 복사한 상태에서도 기존 가상환경으로 Python 테스트 32개와 앱·모델 로드를 통과했습니다. 원본 MNIST·캐시는 포함하지 않았으며 별도 PC의 신규 설치 검사는 아니었습니다. 이번 HCI 작업에서는 모델과 기존 실측값을 보존했습니다.
 
 ## Limitations
 

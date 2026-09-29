@@ -17,28 +17,32 @@
   <main>
     <section class="intro">
       <div><p class="eyebrow">A SMALL CANVAS. TEN POSSIBILITIES.</p><h1>손끝에서 시작하는<br><span>숫자 인식.</span></h1><p class="intro-copy">숫자 하나를 그려보세요. CNN이 손글씨의 패턴을 읽고,<br class="desktop-break"> 어떤 숫자인지 확률로 보여줍니다.</p></div>
-      <div class="model-info"><span class="status-pill {{ '' if model_ready else 'unavailable' }}"><span class="status-dot"></span>{{ 'MODEL READY' if model_ready else 'MODEL UNAVAILABLE' }}</span><p>MNIST-trained CNN</p><span>10 classes <span class="small-dot">·</span> CPU inference</span></div>
+      <div class="model-info"><span class="status-pill {{ '' if model_ready else 'unavailable' }}"><span class="status-dot" aria-hidden="true"></span>{{ '모델 준비 완료' if model_ready else '모델 준비 필요' }}</span><p>MNIST-trained CNN</p><span>10 classes <span class="small-dot">·</span> CPU inference</span></div>
     </section>
 
     <div class="workspace">
       <section class="panel drawing-panel" aria-labelledby="draw-title">
-        <div class="panel-heading"><div><p class="step-label">01 / INPUT</p><h2 id="draw-title">Draw a digit</h2></div><span class="tag">0–9</span></div>
-        <div class="canvas-shell"><canvas id="drawing-canvas" width="336" height="336" aria-label="Draw a single digit from 0 to 9 using a mouse or touch"></canvas><div id="canvas-hint" aria-hidden="true"><span class="hint-mark">✎</span><p>여기에 숫자를 그려주세요</p><span>마우스 또는 터치로 입력</span></div><span class="canvas-corner top-left"></span><span class="canvas-corner bottom-right"></span></div>
-        <div class="canvas-caption"><span><span class="ink-dot"></span> Black ink</span><span>한 번에 한 자리 숫자</span></div>
-        <div class="actions"><button id="recognize-button" class="primary-button" {{ '' if model_ready else 'disabled' }}>Recognize <span aria-hidden="true">↗</span></button><button id="clear-button" class="secondary-button">Clear <span aria-hidden="true">↺</span></button></div>
-        <p id="status-message" class="status-message" role="status" aria-live="polite">{{ '숫자를 그린 뒤 Recognize를 눌러주세요.' if model_ready else model_message }}</p>
+        <div class="panel-heading"><div><p class="step-label">01 / INPUT</p><h2 id="draw-title">숫자 그리기</h2></div><span class="tag">0–9</span></div>
+        <div class="canvas-shell"><canvas id="drawing-canvas" width="336" height="336" aria-label="한 자리 숫자를 그리는 영역" aria-describedby="drawing-help">마우스·펜·터치로 숫자를 그리는 영역입니다. 키보드 그리기는 지원하지 않습니다.</canvas><div id="canvas-hint" aria-hidden="true"><span class="hint-mark">✎</span><p>여기에 숫자를 그려주세요</p><span>마우스 · 펜 · 터치</span></div><span class="canvas-corner top-left"></span><span class="canvas-corner bottom-right"></span></div>
+        <p id="drawing-help" class="canvas-caption"><span><span class="ink-dot" aria-hidden="true"></span> 마우스 · 펜 · 터치</span><span>0–9 중 한 자리 숫자</span></p>
+        <div class="actions"><button id="recognize-button" class="primary-button" type="button" aria-describedby="status-message" disabled>숫자 인식 <span aria-hidden="true">↗</span></button><button id="clear-button" class="secondary-button" type="button">지우기 <span aria-hidden="true">↺</span></button></div>
+        <p id="status-message" class="status-message" role="status" aria-atomic="true">{{ '먼저 숫자를 그리면 인식 버튼이 활성화됩니다.' if model_ready else '모델을 준비하지 못했습니다. 아래 안내에 따라 준비한 뒤 앱을 다시 실행해주세요.' }}</p>
+        {% if not model_ready %}<p class="model-help">학습된 <code>model/mnist_cnn.pt</code>를 확인하거나 <code>python train.py</code>를 실행한 뒤 앱을 다시 시작해주세요.</p>{% endif %}
+        <noscript><p class="model-help">숫자를 그리고 인식하려면 브라우저의 JavaScript를 활성화한 뒤 새로고침해주세요.</p></noscript>
       </section>
 
-      <section class="panel results-panel" aria-labelledby="results-title" aria-busy="false">
-        <div class="panel-heading"><div><p class="step-label">02 / ANALYSIS</p><h2 id="results-title">Recognition result</h2></div><span id="result-badge" class="result-badge">Awaiting input</span></div>
-        <div class="prediction-summary"><div class="prediction-main"><span class="field-label">PREDICTED DIGIT</span><div id="predicted-digit" class="predicted-digit">—</div></div><div class="confidence-block"><span class="field-label">CONFIDENCE</span><div id="confidence" class="confidence-value">—<span>%</span></div><div class="confidence-track"><span id="confidence-fill"></span></div><p id="confidence-caption">입력 후 예측 확률이 표시됩니다.</p></div></div>
-        <div class="top-three-section"><h3>Top 3 predictions</h3><div id="top-three" class="top-three"><div class="rank-card"><span>01</span><strong>—</strong><small>—</small></div><div class="rank-card"><span>02</span><strong>—</strong><small>—</small></div><div class="rank-card"><span>03</span><strong>—</strong><small>—</small></div></div></div>
-        <div class="distribution-header"><h3>Class probabilities</h3><span>ALL 10 DIGITS</span></div>
-        <div id="probability-chart" class="probability-chart" aria-label="Prediction probabilities for digits 0 to 9">{% for digit in range(10) %}<div class="probability-row" data-digit="{{ digit }}"><span class="digit-label">{{ digit }}</span><div class="probability-track"><span class="probability-fill"></span></div><span class="probability-value">—</span></div>{% endfor %}</div>
+      <section class="panel results-panel" aria-labelledby="results-title" aria-busy="false" data-state="{{ 'empty' if model_ready else 'unavailable' }}">
+        <div class="panel-heading"><div><p class="step-label">02 / ANALYSIS</p><h2 id="results-title">인식 결과</h2></div><span id="result-badge" class="result-badge">{{ '입력 대기' if model_ready else '모델 준비 필요' }}</span></div>
+        <div class="prediction-summary"><div class="prediction-main"><span class="field-label">예측 숫자</span><div id="predicted-digit" class="predicted-digit">—</div></div><div class="confidence-block"><span class="field-label">Confidence</span><div id="confidence" class="confidence-value">—<span>%</span></div><div class="confidence-track"><span id="confidence-fill"></span></div><p id="confidence-caption">인식 후 예측 확률이 표시됩니다.</p></div></div>
+        <div class="top-three-section"><h3>Top 3 · 상위 후보</h3><div id="top-three" class="top-three"><div class="rank-card"><span>01</span><strong>—</strong><small>—</small></div><div class="rank-card"><span>02</span><strong>—</strong><small>—</small></div><div class="rank-card"><span>03</span><strong>—</strong><small>—</small></div></div></div>
+        <details class="probability-details">
+          <summary>전체 숫자 확률 <span>0–9 · 펼치기/접기</span></summary>
+          <div id="probability-chart" class="probability-chart" role="group" aria-label="0부터 9까지의 예측 확률">{% for digit in range(10) %}<div class="probability-row" data-digit="{{ digit }}"><span class="digit-label">{{ digit }}</span><div class="probability-track" aria-hidden="true"><span class="probability-fill"></span></div><span class="probability-value">—</span></div>{% endfor %}</div>
+        </details>
       </section>
     </div>
 
-    <section class="pipeline" aria-labelledby="pipeline-title"><div class="pipeline-description"><span class="pipeline-icon" aria-hidden="true">⌘</span><div><h2 id="pipeline-title">From strokes to prediction</h2><p>입력이 모델에 전달되는 과정을 확인하세요.</p></div></div><div class="pipeline-steps"><span>Canvas</span><span class="flow-arrow">→</span><div class="preview-step"><div class="input-preview"><img id="processed-preview" alt="Actual preprocessed 28 by 28 model input" hidden><span id="preview-placeholder">28²</span></div><span>28 × 28 input</span></div><span class="flow-arrow">→</span><span>CNN</span><span class="flow-arrow">→</span><span class="softmax-label">Softmax</span></div></section>
+    <section class="pipeline" aria-labelledby="pipeline-title"><div class="pipeline-description"><span class="pipeline-icon" aria-hidden="true">⌘</span><div><h2 id="pipeline-title">그림이 예측으로 이어지는 과정</h2><p>실제 모델 입력을 확인하세요.</p></div></div><div class="pipeline-steps"><span>Canvas</span><span class="flow-arrow">→</span><div class="preview-step"><div class="input-preview"><img id="processed-preview" alt="모델에 전달한 실제 28×28 전처리 이미지" hidden><span id="preview-placeholder">28²</span></div><span>28 × 28 input</span></div><span class="flow-arrow">→</span><span>CNN</span><span class="flow-arrow">→</span><span class="softmax-label">Softmax</span></div></section>
     <footer><span>Handwritten Digit Recognition <span class="small-dot">/</span> 인공지능활용실습</span><span>확률은 모델의 예측값이며 정답을 보장하지 않습니다.</span></footer>
   </main>
 </body>
