@@ -68,7 +68,7 @@ button span { font-size: 17px; margin-left: 13px; }
 .confidence-value span { font-size: 15px; margin-left: 3px; color: #655d7d; }
 .confidence-track { height: 4px; background: #e6e1f4; border-radius: 5px; margin: 11px 0; overflow: hidden; }
 .confidence-track span { display: block; height: 100%; background: var(--accent); width: 0; }
-.confidence-block p { font-size: 12px; margin: 0; color: #655d7d; line-height: 1.6; }
+.confidence-block p { font-size: 12px; margin: 0; color: #655d7d; line-height: 1.6; word-break: keep-all; overflow-wrap: anywhere; }
 h3 { font-size: 13px; font-weight: 650; margin: 0; color: #555b70; }
 .top-three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin: 12px 0 24px; }
 .rank-card { border: 1px solid var(--line); border-radius: 8px; display: flex; align-items: center; padding: 12px 10px; gap: 9px; }

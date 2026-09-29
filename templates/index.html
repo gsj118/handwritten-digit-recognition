@@ -24,7 +24,7 @@
       <section class="panel drawing-panel" aria-labelledby="draw-title">
         <div class="panel-heading"><div><p class="step-label">01 / INPUT</p><h2 id="draw-title">숫자 그리기</h2></div><span class="tag">0–9</span></div>
         <div class="canvas-shell"><canvas id="drawing-canvas" width="336" height="336" aria-label="한 자리 숫자를 그리는 영역" aria-describedby="drawing-help">마우스·펜·터치로 숫자를 그리는 영역입니다. 키보드 그리기는 지원하지 않습니다.</canvas><div id="canvas-hint" aria-hidden="true"><span class="hint-mark">✎</span><p>여기에 숫자를 그려주세요</p><span>마우스 · 펜 · 터치</span></div><span class="canvas-corner top-left"></span><span class="canvas-corner bottom-right"></span></div>
-        <p id="drawing-help" class="canvas-caption"><span><span class="ink-dot" aria-hidden="true"></span> 마우스 · 펜 · 터치</span><span>0–9 중 한 자리 숫자</span></p>
+        <p id="drawing-help" class="canvas-caption"><span><span class="ink-dot" aria-hidden="true"></span> 마우스 · 펜 · 터치</span><span>여백을 두고 크게 · 한 자리 숫자</span></p>
         <div class="actions"><button id="recognize-button" class="primary-button" type="button" aria-describedby="status-message" disabled>숫자 인식 <span aria-hidden="true">↗</span></button><button id="clear-button" class="secondary-button" type="button">지우기 <span aria-hidden="true">↺</span></button></div>
         <p id="status-message" class="status-message" role="status" aria-atomic="true">{{ '먼저 숫자를 그리면 인식 버튼이 활성화됩니다.' if model_ready else '모델을 준비하지 못했습니다. 아래 안내에 따라 준비한 뒤 앱을 다시 실행해주세요.' }}</p>
         {% if not model_ready %}<p class="model-help">학습된 <code>model/mnist_cnn.pt</code>를 확인하거나 <code>python train.py</code>를 실행한 뒤 앱을 다시 시작해주세요.</p>{% endif %}
@@ -33,7 +33,7 @@
 
       <section class="panel results-panel" aria-labelledby="results-title" aria-busy="false" data-state="{{ 'empty' if model_ready else 'unavailable' }}">
         <div class="panel-heading"><div><p class="step-label">02 / ANALYSIS</p><h2 id="results-title">인식 결과</h2></div><span id="result-badge" class="result-badge">{{ '입력 대기' if model_ready else '모델 준비 필요' }}</span></div>
-        <div class="prediction-summary"><div class="prediction-main"><span class="field-label">예측 숫자</span><div id="predicted-digit" class="predicted-digit">—</div></div><div class="confidence-block"><span class="field-label">Confidence</span><div id="confidence" class="confidence-value">—<span>%</span></div><div class="confidence-track"><span id="confidence-fill"></span></div><p id="confidence-caption">인식 후 예측 확률이 표시됩니다.</p></div></div>
+        <div class="prediction-summary"><div class="prediction-main"><span class="field-label">예측 숫자</span><div id="predicted-digit" class="predicted-digit">—</div></div><div class="confidence-block"><span class="field-label">예측 확률</span><div id="confidence" class="confidence-value">—<span>%</span></div><div class="confidence-track"><span id="confidence-fill"></span></div><p id="confidence-caption">인식 후 예측 확률이 표시됩니다.</p></div></div>
         <div class="top-three-section"><h3>Top 3 · 상위 후보</h3><div id="top-three" class="top-three"><div class="rank-card"><span>01</span><strong>—</strong><small>—</small></div><div class="rank-card"><span>02</span><strong>—</strong><small>—</small></div><div class="rank-card"><span>03</span><strong>—</strong><small>—</small></div></div></div>
         <details class="probability-details">
           <summary>전체 숫자 확률 <span>0–9 · 펼치기/접기</span></summary>

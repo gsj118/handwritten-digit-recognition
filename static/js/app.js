@@ -140,7 +140,7 @@ function renderPrediction(result) {
   const percent = (result.confidence * 100).toFixed(1);
   document.getElementById("confidence").replaceChildren(document.createTextNode(percent), Object.assign(document.createElement("span"), { textContent: "%" }));
   document.getElementById("confidence-fill").style.width = `${percent}%`;
-  document.getElementById("confidence-caption").textContent = "Softmax 예측 확률 · 정답 보장 아님";
+  document.getElementById("confidence-caption").textContent = "후보 간 상대 확률이며, 높아도 틀릴 수 있습니다.";
   document.getElementById("top-three").classList.add("has-result");
   document.querySelectorAll(".rank-card").forEach((card, index) => {
     card.querySelector("strong").textContent = result.top3[index].digit;
@@ -156,7 +156,7 @@ function renderPrediction(result) {
   preview.src = result.processed_image;
   preview.hidden = false;
   document.getElementById("preview-placeholder").hidden = true;
-  setState("complete", `예측 숫자는 ${result.prediction}, Confidence는 ${percent}%입니다. 새 숫자를 그리려면 ‘지우기’를 눌러주세요.`);
+  setState("complete", `예측 숫자는 ${result.prediction}, 예측 확률은 ${percent}%입니다. 새 숫자를 그리려면 ‘지우기’를 눌러주세요.`);
 }
 
 function responseErrorMessage(status) {

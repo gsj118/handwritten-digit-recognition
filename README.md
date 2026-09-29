@@ -6,9 +6,9 @@
 
 프로그램을 실행한 뒤 [http://127.0.0.1:5000](http://127.0.0.1:5000)에 접속합니다. 왼쪽에서 숫자를 그리고, 오른쪽에서 예측 결과와 확률 분포를 확인합니다. 아래에는 실제 모델에 전달한 28×28 이미지가 표시됩니다.
 
-![v1.1 브라우저에서 숫자 7을 그려 인식한 화면](docs/hci_after.png)
+![v1.2 브라우저에서 숫자 7을 그려 인식한 화면](docs/final_v1_2.png)
 
-직접 실행한 v1.1 앱의 스크린샷입니다. 표시되는 confidence는 소수점 한 자리로 반올림한 값입니다. [v1.0 화면](docs/demo.png)은 비교 기준으로 보존했습니다.
+직접 실행한 v1.2 앱의 스크린샷입니다. 화면의 ‘예측 확률’(confidence)은 소수점 한 자리로 반올림한 값입니다. [v1.0 화면](docs/demo.png)과 [v1.1 화면](docs/hci_after.png)은 비교 기준으로 보존했습니다.
 
 ## Features
 
@@ -41,8 +41,13 @@
 |---|---|---|
 | v1.0 — AI Functionality | MNIST CNN, Canvas·전처리·추론 API, 확률 시각화, Python 테스트 32개 | [`1aa91ca`](https://github.com/gsj118/handwritten-digit-recognition/commit/1aa91ca) · `Implement MNIST handwritten digit recognition app` |
 | v1.1 — HCI / UX Refinement | 상태 피드백·오류 예방/복구·상세 정보·접근성 보완, UI 상태 테스트와 HCI 설계 기록 | 별도 후속 commit · `Improve interaction and UI using HCI principles` |
+| v1.2 — Synthetic Beta Evaluation & Final Refinement | 10개 synthetic persona의 시나리오 검토·피드백 통합, 확률 설명과 입력 안내 보완, 회귀 검증 | 별도 후속 commit · `Finalize app after synthetic beta evaluation` |
 
 버전명은 개발 단계 구분이며 별도 Git tag나 GitHub Release를 생성했다는 의미는 아닙니다. v1.0 commit과 모델·성능 기록은 보존합니다.
+
+## Synthetic Beta Evaluation
+
+다양한 상황을 가정한 10개 synthetic persona와 시나리오로 실행 화면을 최종 검토했습니다. 피드백을 통합하고 실제 수정 가치가 있는 확률 설명·입력 크기 안내만 반영한 뒤 자동 테스트와 1440px·390px·320px 브라우저 회귀 검증을 수행했습니다. 실제 참여자를 모집한 사용성 평가가 아니며, 사용자 만족도나 모델 정확도 향상을 입증하지 않습니다. 관찰 근거와 수용·거절·보류 판단은 [Synthetic Beta Evaluation 기록](docs/SYNTHETIC_BETA_EVALUATION.md)에 있습니다.
 
 ## How It Works
 
@@ -121,7 +126,9 @@ handwritten-digit-recognition/
 ├── docs/
 │   ├── demo.png             # Preserved v1.0 screenshot
 │   ├── hci_after.png        # Actual v1.1 screenshot
-│   └── HCI_UX_REFINEMENT.md # HCI review and design decisions
+│   ├── HCI_UX_REFINEMENT.md # HCI review and design decisions
+│   ├── SYNTHETIC_BETA_EVALUATION.md # Scenario observations and final decisions
+│   └── final_v1_2.png       # Actual v1.2 screenshot
 └── tests/
     ├── conftest.py
     ├── test_preprocessing.py
@@ -200,10 +207,10 @@ python app.py
 
 1. Canvas에 0~9 중 **한 자리 숫자**를 그립니다.
 2. 획을 마친 뒤 활성화된 **숫자 인식**을 눌러 분석합니다.
-3. 예측 숫자, Confidence, Top 3와 28×28 입력을 확인합니다. **전체 숫자 확률**을 펼치면 0~9 확률을 볼 수 있습니다.
+3. 예측 숫자, 예측 확률(Confidence), Top 3와 28×28 입력을 확인합니다. **전체 숫자 확률**을 펼치면 0~9 확률을 볼 수 있습니다.
 4. **지우기**로 그림과 결과를 초기화한 뒤 다시 그립니다. 분석 중에도 지우기로 취소할 수 있습니다.
 
-숫자가 Canvas 가장자리에서 잘리지 않도록 그려주세요. 인식이 어려우면 획을 명확하게 다시 작성해 보세요. 여러 자리 숫자나 글자를 분리하는 기능은 없습니다.
+여백을 두고 숫자를 크게 그리되 Canvas 가장자리에서 잘리지 않도록 해주세요. 인식이 어려우면 획을 명확하게 다시 작성해 보세요. 여러 자리 숫자나 글자를 분리하는 기능은 없습니다.
 
 ## Model Performance
 
@@ -269,6 +276,8 @@ node --test tests/ui_state.test.cjs
 실제 결과는 JavaScript 구문 검사 통과, **UI 상태 테스트 8개 통과**입니다. pytest 32개와 합계 40개이며, ‘pytest 40개’는 아닙니다. UI 테스트는 실제 `app.js`를 DOM 대역과 제어된 요청으로 실행해 중복 요청, 요청 취소 후 늦은 응답, timeout, 오류 복구와 모델 미준비 상태를 확인합니다.
 
 v1.1 실행 화면에서도 숫자 7 그리기·인식, 결과·미리보기, 지우기, 키보드 상세 확률 펼치기, 서버 연결 실패 후 재시도를 확인했습니다. 데스크톱(1440px)과 390px에서 핵심 흐름을 검증했고 390px·320px에서 가로 넘침이 없었습니다. 이는 개발 중 기능 검증이며 사용자 대상 사용성 테스트가 아닙니다.
+
+v1.2에서도 pytest 32개·UI 상태 테스트 8개와 구문 검사가 통과했습니다. 1440px·390px·320px의 그리기 → 인식 → 결과 → 상세 → 지우기 → 재시도와 서버 중단·복구를 다시 확인했습니다. 작은 입력과 불완전한 숫자의 오인식도 관찰했으며, 이를 통계적인 정확도 측정으로 해석하지 않습니다. 실제 모바일 터치·스크린리더 검증은 수행하지 않았습니다.
 
 v1.0에서 저장된 가중치의 `python evaluate.py` 재평가 결과는 **98.87%**였습니다. 당시 배포 대상 21개 파일만 임시 폴더에 복사한 상태에서도 기존 가상환경으로 Python 테스트 32개와 앱·모델 로드를 통과했습니다. 원본 MNIST·캐시는 포함하지 않았으며 별도 PC의 신규 설치 검사는 아니었습니다. 이번 HCI 작업에서는 모델과 기존 실측값을 보존했습니다.
 
